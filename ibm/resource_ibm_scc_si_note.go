@@ -155,6 +155,11 @@ func resourceIBMSccSiNote() *schema.Resource {
 							Required:    true,
 							Description: "The aggregation type of the KPI values. - SUM&#58; A single-value metrics aggregation type that sums up numeric values  that are extracted from KPI occurrences.",
 						},
+						"severity": &schema.Schema{
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "The severity type of the KPI values.",
+						},
 					},
 				},
 			},
@@ -217,6 +222,11 @@ func resourceIBMSccSiNote() *schema.Resource {
 										Type:        schema.TypeString,
 										Optional:    true,
 										Description: "The text of this card element.",
+									},
+									"direction": &schema.Schema{
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "The direction of the bar used to represent KPI",
 									},
 									"kind": &schema.Schema{
 										Type:        schema.TypeString,
@@ -483,6 +493,7 @@ func resourceIBMSccSiNoteMapToKpiType(kpiTypeMap map[string]interface{}) finding
 	kpiType := findingsv1.KpiType{}
 
 	kpiType.AggregationType = core.StringPtr(kpiTypeMap["aggregation_type"].(string))
+	kpiType.Severity = core.StringPtr(kpiTypeMap["severity"].(string))
 
 	return kpiType
 }
@@ -529,6 +540,9 @@ func resourceIBMSccSiNoteMapToCardElement(cardElementMap map[string]interface{})
 	}
 	if cardElementMap["kind"] != nil {
 		cardElement.Kind = core.StringPtr(cardElementMap["kind"].(string))
+	}
+	if cardElementMap["direction"] != nil {
+		cardElement.Direction = core.StringPtr(cardElementMap["direction"].(string))
 	}
 	if cardElementMap["default_time_range"] != nil {
 		cardElement.DefaultTimeRange = core.StringPtr(cardElementMap["default_time_range"].(string))
@@ -667,6 +681,7 @@ func resourceIBMSccSiNoteMapToCardElementBreakdownCardElement(cardElementBreakdo
 
 	cardElementBreakdownCardElement.Text = core.StringPtr(cardElementBreakdownCardElementMap["text"].(string))
 	cardElementBreakdownCardElement.Kind = core.StringPtr(cardElementBreakdownCardElementMap["kind"].(string))
+	cardElementBreakdownCardElement.Direction = core.StringPtr(cardElementBreakdownCardElementMap["direction"].(string))
 	if cardElementBreakdownCardElementMap["default_time_range"] != nil {
 		cardElementBreakdownCardElement.DefaultTimeRange = core.StringPtr(cardElementBreakdownCardElementMap["default_time_range"].(string))
 	}
@@ -854,6 +869,7 @@ func resourceIBMSccSiNoteKpiTypeToMap(kpiType findingsv1.KpiType) map[string]int
 	kpiTypeMap := map[string]interface{}{}
 
 	kpiTypeMap["aggregation_type"] = kpiType.AggregationType
+	kpiTypeMap["severity"] = kpiType.Severity
 
 	return kpiTypeMap
 }
@@ -1033,6 +1049,7 @@ func resourceIBMSccSiNoteCardElementBreakdownCardElementToMap(cardElementBreakdo
 
 	cardElementBreakdownCardElementMap["text"] = cardElementBreakdownCardElement.Text
 	cardElementBreakdownCardElementMap["kind"] = cardElementBreakdownCardElement.Kind
+	cardElementBreakdownCardElementMap["direction"] = cardElementBreakdownCardElement.Direction
 	if cardElementBreakdownCardElement.DefaultTimeRange != nil {
 		cardElementBreakdownCardElementMap["default_time_range"] = cardElementBreakdownCardElement.DefaultTimeRange
 	}

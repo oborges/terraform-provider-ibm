@@ -150,6 +150,11 @@ func dataSourceIBMSccSiNote() *schema.Resource {
 							Computed:    true,
 							Description: "The aggregation type of the KPI values. - SUM&#58; A single-value metrics aggregation type that sums up numeric values  that are extracted from KPI occurrences.",
 						},
+						"severity": &schema.Schema{
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The severity type of the KPI values.",
+						},
 					},
 				},
 			},
@@ -211,6 +216,11 @@ func dataSourceIBMSccSiNote() *schema.Resource {
 										Type:        schema.TypeString,
 										Computed:    true,
 										Description: "The text of this card element.",
+									},
+									"direction": &schema.Schema{
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "The direction of the bar used to represent KPI.",
 									},
 									"kind": &schema.Schema{
 										Type:        schema.TypeString,
@@ -509,6 +519,9 @@ func dataSourceAPINoteKpiToMap(kpiItem findingsv1.KpiType) (kpiMap map[string]in
 
 	if kpiItem.AggregationType != nil {
 		kpiMap["aggregation_type"] = kpiItem.AggregationType
+	}
+	if kpiItem.Severity != nil {
+		kpiMap["severity"] = kpiItem.Severity
 	}
 
 	return kpiMap
